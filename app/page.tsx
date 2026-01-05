@@ -1,3 +1,4 @@
+import Nav from '@/components/Nav'
 import styles from './page.module.css'
 
 const PHONE_NUMBER = '+919629998846'
@@ -6,7 +7,9 @@ const LOCATION = 'Bangalore'
 
 export default function Home() {
   return (
-    <div className={styles.container}>
+    <>
+      <Nav />
+      <div className={styles.container}>
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.heroContent}>
@@ -154,5 +157,6 @@ export default function Home() {
         </div>
       </section>
     </div>
+    </>
   )
 }
