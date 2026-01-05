@@ -58,13 +58,14 @@ Sent from Sanvion Academy Contact Form
     // Sign up at https://formspree.io and get your form endpoint
     // Then replace the URL below with your Formspree endpoint
     
-    const FORMSPREE_ENDPOINT = process.env.FORMSPREE_ENDPOINT || ''
+    const FORMSPREE_ENDPOINT = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || process.env.FORMSPREE_ENDPOINT || ''
     
     if (FORMSPREE_ENDPOINT) {
       const response = await fetch(FORMSPREE_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify({
           name,
@@ -72,16 +73,37 @@ Sent from Sanvion Academy Contact Form
           phone,
           message,
           _subject: `New Enquiry from Sanvion Academy - ${name}`,
+          _replyto: email, // This allows Formspree to set the reply-to field
         }),
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error('Failed to send email')
+        console.error('Formspree error:', data)
+        throw new Error(data.error || 'Failed to send email')
       }
+
+      // Success - Formspree will send the email
+      return NextResponse.json(
+        { success: true, message: 'Message sent successfully! We will get back to you soon.' },
+        { status: 200 }
+      )
     } else {
       // Fallback: Log to console (for development)
-      console.log('Contact Form Submission:', emailData)
-      // In production, you should set up an email service
+      console.log('⚠️ FORMSPREE_ENDPOINT not configured. Contact Form Submission:', emailData)
+      console.log('📧 To receive emails, set up Formspree: https://formspree.io')
+      
+      // In development, still return success but log a warning
+      if (process.env.NODE_ENV === 'development') {
+        return NextResponse.json(
+          { success: true, message: 'Message logged (Formspree not configured). Check console.' },
+          { status: 200 }
+        )
+      }
+      
+      // In production without Formspree, return error
+      throw new Error('Email service not configured. Please set FORMSPREE_ENDPOINT environment variable.')
     }
 
     return NextResponse.json(
