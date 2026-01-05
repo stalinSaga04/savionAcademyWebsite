@@ -1,9 +1,22 @@
+import { Metadata } from 'next'
 import Nav from '@/components/Nav'
 import styles from './page.module.css'
 
 const PHONE_NUMBER = '+919629998846'
 const EMAIL = 'santhakumardevan@gmail.com'
 const LOCATION = 'Bangalore'
+
+export const metadata: Metadata = {
+  title: 'Sanvion Academy - Best IT Training Institute in Bangalore | Learn. Grow. Lead in IT.',
+  description: 'Best IT training institute in Bangalore. Industry-focused IT training in Bangalore for Service Desk, Technical Support, MIM, and Career Readiness. Practical IT training to launch your career in Bangalore.',
+  keywords: 'IT training in Bangalore, best IT institute Bangalore, Service Desk training Bangalore, Technical Support training Bangalore, MIM training Bangalore, IT career training Bangalore, IT courses Bangalore, best IT training institute Bangalore',
+  openGraph: {
+    title: 'Sanvion Academy - Best IT Training Institute in Bangalore',
+    description: 'Industry-focused IT training in Bangalore. Practical, real-world IT training to launch and grow your career.',
+    type: 'website',
+    locale: 'en_IN',
+  },
+}
 
 export default function Home() {
   return (

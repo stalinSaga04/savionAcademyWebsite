@@ -1,5 +1,18 @@
+import { Metadata } from 'next'
 import Nav from '@/components/Nav'
 import styles from './page.module.css'
+
+export const metadata: Metadata = {
+  title: 'About Trainer - Experienced IT Professional | Sanvion Academy Bangalore',
+  description: 'Learn from an experienced IT trainer in Bangalore. Industry experience in Service Desk, Technical Support, and Major Incident Management. Best IT training institute in Bangalore.',
+  keywords: 'IT trainer Bangalore, experienced IT trainer, IT training instructor Bangalore, IT professional trainer Bangalore, best IT trainer Bangalore',
+  openGraph: {
+    title: 'About Trainer - Sanvion Academy Bangalore',
+    description: 'Experienced IT trainer in Bangalore with real-world industry experience.',
+    type: 'website',
+    locale: 'en_IN',
+  },
+}
 
 export default function AboutTrainer() {
   return (

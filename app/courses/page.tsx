@@ -1,7 +1,20 @@
+import { Metadata } from 'next'
 import Nav from '@/components/Nav'
 import styles from './page.module.css'
 
 const PHONE_NUMBER = '+919629998846'
+
+export const metadata: Metadata = {
+  title: 'IT Courses in Bangalore - Service Desk, Technical Support, MIM Training | Sanvion Academy',
+  description: 'Best IT courses in Bangalore: Service Desk Fundamentals, Technical Support Training, Major Incident Management (MIM), and IT Career Readiness. Practical IT training institute in Bangalore.',
+  keywords: 'IT courses in Bangalore, Service Desk course Bangalore, Technical Support course Bangalore, MIM course Bangalore, IT training courses Bangalore, best IT courses Bangalore, IT institute Bangalore courses, IT certification courses Bangalore',
+  openGraph: {
+    title: 'IT Courses in Bangalore - Sanvion Academy',
+    description: 'Best IT courses in Bangalore. Service Desk, Technical Support, MIM, and Career Readiness training.',
+    type: 'website',
+    locale: 'en_IN',
+  },
+}
 
 const courses = [
   {

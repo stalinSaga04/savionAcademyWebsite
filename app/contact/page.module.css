@@ -185,6 +185,22 @@
   border-color: var(--accent-blue);
 }
 
+.inputError {
+  border-color: #ef4444 !important;
+}
+
+.errorText {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.helpText {
+  color: var(--text-light);
+  font-size: 0.8125rem;
+  margin-top: 0.25rem;
+}
+
 .textarea {
   resize: vertical;
   min-height: 120px;

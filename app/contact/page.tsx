@@ -17,9 +17,76 @@ export default function Contact() {
     message: ''
   })
   const [submitted, setSubmitted] = useState(false)
+  const [errors, setErrors] = useState({
+    phone: '',
+    email: ''
+  })
+
+  // Validate phone number (India +91, 10 digits)
+  const validatePhone = (phone: string): boolean => {
+    // Remove all non-digits
+    const digitsOnly = phone.replace(/\D/g, '')
+    
+    // Check if starts with 91 (India country code)
+    if (digitsOnly.startsWith('91') && digitsOnly.length === 12) {
+      // +91 followed by 10 digits
+      return true
+    }
+    // Check if it's just 10 digits (assume India)
+    if (digitsOnly.length === 10) {
+      return true
+    }
+    // Check if it starts with +91 and has 10 more digits
+    if (phone.startsWith('+91') && digitsOnly.length === 12) {
+      return true
+    }
+    return false
+  }
+
+  // Format phone number for display
+  const formatPhone = (phone: string): string => {
+    const digitsOnly = phone.replace(/\D/g, '')
+    
+    // If starts with 91, keep it
+    if (digitsOnly.startsWith('91') && digitsOnly.length === 12) {
+      return `+91 ${digitsOnly.slice(2)}`
+    }
+    // If 10 digits, add +91
+    if (digitsOnly.length === 10) {
+      return `+91 ${digitsOnly}`
+    }
+    // If already has +91
+    if (phone.startsWith('+91')) {
+      return phone
+    }
+    return phone
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validate phone
+    if (!validatePhone(formData.phone)) {
+      setErrors({
+        ...errors,
+        phone: 'Please enter a valid Indian phone number (+91 followed by 10 digits)'
+      })
+      return
+    }
+
+    // Validate and normalize email
+    const emailLower = formData.email.toLowerCase().trim()
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(emailLower)) {
+      setErrors({
+        ...errors,
+        email: 'Please enter a valid email address'
+      })
+      return
+    }
+
+    // Format phone number
+    const formattedPhone = formatPhone(formData.phone)
     
     try {
       const response = await fetch('/api/contact', {
@@ -27,13 +94,18 @@ export default function Contact() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          email: emailLower,
+          phone: formattedPhone
+        }),
       })
 
       const data = await response.json()
 
       if (response.ok) {
         setSubmitted(true)
+        setErrors({ phone: '', email: '' })
         // Reset form
         setFormData({
           name: '',
@@ -51,10 +123,33 @@ export default function Contact() {
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
+    const { name, value } = e.target
+    
+    // Convert email to lowercase as user types
+    if (name === 'email') {
+      setFormData({
+        ...formData,
+        [name]: value.toLowerCase()
+      })
+      // Clear email error when user starts typing
+      if (errors.email) {
+        setErrors({ ...errors, email: '' })
+      }
+    } else if (name === 'phone') {
+      setFormData({
+        ...formData,
+        [name]: value
+      })
+      // Clear phone error when user starts typing
+      if (errors.phone) {
+        setErrors({ ...errors, phone: '' })
+      }
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      })
+    }
   }
 
   return (
@@ -149,13 +244,14 @@ export default function Contact() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className={styles.input}
+                    className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
                     placeholder="your.email@example.com"
                   />
+                  {errors.email && <span className={styles.errorText}>{errors.email}</span>}
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label htmlFor="phone" className={styles.label}>Phone *</label>
+                  <label htmlFor="phone" className={styles.label}>Phone * (India +91)</label>
                   <input
                     type="tel"
                     id="phone"
@@ -163,9 +259,12 @@ export default function Contact() {
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    className={styles.input}
-                    placeholder="Your phone number"
+                    className={`${styles.input} ${errors.phone ? styles.inputError : ''}`}
+                    placeholder="+91 9876543210 or 9876543210"
+                    maxLength={15}
                   />
+                  {errors.phone && <span className={styles.errorText}>{errors.phone}</span>}
+                  <small className={styles.helpText}>Enter 10-digit Indian mobile number (with or without +91)</small>
                 </div>
 
                 <div className={styles.formGroup}>

@@ -1,7 +1,20 @@
+import { Metadata } from 'next'
 import Nav from '@/components/Nav'
 import styles from './page.module.css'
 
 const PHONE_NUMBER = '+919629998846'
+
+export const metadata: Metadata = {
+  title: 'Referral Program - Sanvion Academy Bangalore | Earn Rewards',
+  description: 'Refer your friends to Sanvion Academy in Bangalore and earn exciting gifts. Best IT training institute referral program in Bangalore. Refer and earn rewards.',
+  keywords: 'IT training referral Bangalore, refer IT course Bangalore, IT institute referral program Bangalore, earn rewards IT training Bangalore',
+  openGraph: {
+    title: 'Referral Program - Sanvion Academy Bangalore',
+    description: 'Refer friends to IT training in Bangalore and earn exciting rewards.',
+    type: 'website',
+    locale: 'en_IN',
+  },
+}
 
 export default function Referral() {
   return (

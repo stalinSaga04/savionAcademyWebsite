@@ -1,5 +1,18 @@
+import { Metadata } from 'next'
 import Nav from '@/components/Nav'
 import styles from './page.module.css'
+
+export const metadata: Metadata = {
+  title: 'Why Choose Sanvion Academy - Best IT Training Institute in Bangalore',
+  description: 'Why choose Sanvion Academy in Bangalore? Industry-focused IT training, practical real-world scenarios, mentor-led learning. Best IT training institute in Bangalore for career success.',
+  keywords: 'why choose IT training Bangalore, best IT institute Bangalore, IT training benefits Bangalore, practical IT training Bangalore, IT career training Bangalore, trusted IT institute Bangalore',
+  openGraph: {
+    title: 'Why Choose Sanvion Academy - Best IT Training in Bangalore',
+    description: 'Industry-focused IT training in Bangalore. Practical, real-world IT training with mentor-led learning.',
+    type: 'website',
+    locale: 'en_IN',
+  },
+}
 
 export default function WhySanvionAcademy() {
   return (
