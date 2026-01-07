@@ -4,10 +4,15 @@ import { useState } from 'react'
 import Nav from '@/components/Nav'
 import styles from './page.module.css'
 
-const PHONE_NUMBER = '+91 96299 98846'
-const EMAIL = 'santhakumardevan@gmail.com'
+// Current contact details
+const PHONE_NUMBER = '+91 81221 39068'
+const EMAIL = 'stalin.sagayaraj04@gmail.com'
 const LOCATION = 'Bangalore'
 const PHONE_CLEAN = PHONE_NUMBER.replace(/\D/g, '')
+
+// Original contact details (for later use)
+// const PHONE_NUMBER = '+91 96299 98846'
+// const EMAIL = 'santhakumardevan@gmail.com'
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -26,7 +31,7 @@ export default function Contact() {
   const validatePhone = (phone: string): boolean => {
     // Remove all non-digits
     const digitsOnly = phone.replace(/\D/g, '')
-    
+
     // Check if starts with 91 (India country code)
     if (digitsOnly.startsWith('91') && digitsOnly.length === 12) {
       // +91 followed by 10 digits
@@ -46,7 +51,7 @@ export default function Contact() {
   // Format phone number for display
   const formatPhone = (phone: string): string => {
     const digitsOnly = phone.replace(/\D/g, '')
-    
+
     // If starts with 91, keep it
     if (digitsOnly.startsWith('91') && digitsOnly.length === 12) {
       return `+91 ${digitsOnly.slice(2)}`
@@ -64,7 +69,7 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     // Validate phone
     if (!validatePhone(formData.phone)) {
       setErrors({
@@ -87,21 +92,30 @@ export default function Contact() {
 
     // Format phone number
     const formattedPhone = formatPhone(formData.phone)
-    
+
+    // Get Formspree endpoint from environment variable
+    const formspreeEndpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT
+
+    if (!formspreeEndpoint) {
+      alert('Form configuration error. Please contact us directly.')
+      return
+    }
+
     try {
-      const response = await fetch('/api/contact', {
+      // Build FormData for Formspree submission
+      const formDataToSend = new FormData()
+      formDataToSend.append('name', formData.name)
+      formDataToSend.append('email', emailLower)
+      formDataToSend.append('phone', formattedPhone)
+      formDataToSend.append('message', formData.message)
+
+      const response = await fetch(formspreeEndpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          email: emailLower,
-          phone: formattedPhone
-        }),
+        body: formDataToSend,
       })
-
-      const data = await response.json()
 
       if (response.ok) {
         setSubmitted(true)
@@ -114,7 +128,7 @@ export default function Contact() {
           message: ''
         })
       } else {
-        alert(data.error || 'Failed to send message. Please try again or contact us directly.')
+        alert('Failed to send message. Please try again or contact us directly.')
       }
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -124,7 +138,7 @@ export default function Contact() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    
+
     // Convert email to lowercase as user types
     if (name === 'email') {
       setFormData({
@@ -166,7 +180,7 @@ export default function Contact() {
         <section className={styles.content}>
           <div className={styles.contactInfo}>
             <h2 className={styles.sectionTitle}>Contact Details</h2>
-            
+
             <div className={styles.contactItem}>
               <div className={styles.contactIcon}>📞</div>
               <div className={styles.contactDetails}>
@@ -196,7 +210,7 @@ export default function Contact() {
             </div>
 
             <div className={styles.actionButtons}>
-              <a 
+              <a
                 href={`https://wa.me/${PHONE_CLEAN}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -204,7 +218,7 @@ export default function Contact() {
               >
                 WhatsApp Us
               </a>
-              <a 
+              <a
                 href={`tel:${PHONE_CLEAN}`}
                 className={styles.callButton}
               >
